@@ -207,8 +207,6 @@ function pawnLogic(piece){
 	}
 	console.log(legalMoves);
 	return legalMoves;
-
-	
 }
 function majorPieceLogic(piece){
 	
@@ -264,13 +262,12 @@ function majorPieceLogic(piece){
 		}
 		testingPos = prevPosition.slice();
 	}
-	legalMoves = movesIntoCheck(piece,legalMoves);
+	legalMoves = directLineToKing(piece,legalMoves,getColor(piece));
 	console.log(legalMoves);
 	for( let i = 0; i < legalMoves.length; i++){
 		//document.getElementById(parseInt(legalMoves[i])).style.opacity = ".5";
 		document.getElementById(parseInt(legalMoves[i])).style.border = "4px solid pink";
 	}
-	
 	return legalMoves;
 }
 function returnOpacity(){
@@ -293,74 +290,80 @@ function deletePieces(){
 }
 function directLineToKing(piece,legalMoves,kingColor){
 	let nonChecks = legalMoves.slice();
-	
+	console.log("nonchecks: "+ nonChecks);
 	let directions =  [[-1,0],[1,0],[0,-1],[0,1],[-1,-1],[1,1],[1,-1],[-1,1],[-1,-2],[-1,2],[1,-2],[1,2],[2,-1],[2,1],[-2,-1],[-2,1]];
 	for(let i = 0; i < legalMoves.length; i++){
+	console.log("legal move: " + legalMoves[i]);
 		let testingPosition = curPosition.map(a => ([...a]));
 		let rowCol = findPreviousPosition(piece);
 		testingPosition[rowCol[0]][rowCol[1]] = "";
 		let newRowCol = convertSquareToRowCol(legalMoves[i])
 		testingPosition[newRowCol[0]][newRowCol[1]] = piece;
-		let kingPos = getKingPos(kingColor);
-
+		let kingPos = getKingPos(kingColor,testingPosition);
 		for(let j = 0; j < directions.length; j++){
+		console.log("j: "+ directions[j]);
 			let barrier = false;
 			let iterations = 0;
 			while(barrier == false){
-				console.log("testingPos: "+ testingPos);
-				//check bounds of board
-			
-
+				console.log("king pos: "+ kingPos);
+				//console.log("testingPos: "+ testingPosition);
 				if(kingPos[0] + directions[j][0] > 7 || kingPos[0] + directions[j][0] < 0 || kingPos[1] + directions[j][1] > 7 || kingPos[1] + directions[j][1] < 0) {
 					barrier = true;
 					continue;
 				}
 				let searchSquare = testingPosition[kingPos[0] + directions[j][0]][kingPos[1] + directions[j][1]];
-				else if(searchSquare != '' && (kingColor != searchSquareColor)){
-					let searchSquareColor = getColor(searchSquare);
+				console.log("searchSquare: "+ searchSquare);
+				let searchSquareColor = getColor(searchSquare);
+			    if(searchSquare != ''){
+					barrier = true;
+					if(kingColor != getColor(piece)){
 					//if not empty, check for oppisite color and if the directions match with an attacking piece.
-					if((j < 8 && j>=4) ){
-						//bishop, queen,king and pawn
-						if(iterations == 0 && searchSquare[1] == 'p' ) {
-							if(kingColor == "white" && (j==4 || j == 7)){
-								nonChecks.splice(nonChecks.indexOf(legalMoves[i]),1);
-							}else if(kingColor == "black" && (j==5 || j == 6)){
+						if((j < 8 && j>=4) ){
+							//bishop, queen,king and pawn
+							if(iterations == 0 && searchSquare[1] == 'p' ) {
+								if(kingColor == "white" && (j==4 || j == 7)){
+									nonChecks.splice(nonChecks.indexOf(legalMoves[i]),1);
+								}else if(kingColor == "black" && (j==5 || j == 6)){
+									nonChecks.splice(nonChecks.indexOf(legalMoves[i]),1);
+								}
+							}
+							if(iterations == 0 && searchSquare.substring(1,searchSquare.length-1) == 'k'){
 								nonChecks.splice(nonChecks.indexOf(legalMoves[i]),1);
 							}
-						if(iterations == 0 && searchSquare.substring(1,searchSquare.length-1) == 'k'){
-							nonChecks.splice(nonChecks.indexOf(legalMoves[i]),1);
+							if(searchSquare[1] == 'b' || searchSquare[1] == 'q' ){
+								nonChecks.splice(nonChecks.indexOf(legalMoves[i]),1);
+							}
 						}
-						if(searchSquare[1] == 'b' || searchSquare[1] == 'q' ){
-							nonChecks.splice(nonChecks.indexOf(legalMoves[i]),1);
-						}
-					}
-					else if(j < 4){
-						//rook, king, and queen
-						if(iterations == 0 && searchSquare.substring(1,searchSquare.length-1) == 'k'){
-							nonChecks.splice(nonChecks.indexOf(legalMoves[i]),1);
-						}
-						if(searchSquare[1] == 'q' ||searchSquare[1] == 'r' ){
-							nonChecks.splice(nonChecks.indexOf(legalMoves[i]),1);
-						}
-					}else if(j >= 8 && iterations == 0){
-						//knights
-						if(searchSquare.substring(1,searchSquare.length-1) == 'kn' ){
-							nonChecks.splice(nonChecks.indexOf(legalMoves[i]),1);
+						else if(j < 4){
+							//rook, king, and queen
+							if(iterations == 0 && searchSquare.substring(1,searchSquare.length-1) == 'k'){
+								nonChecks.splice(nonChecks.indexOf(legalMoves[i]),1);
+							}
+							if(searchSquare[1] == 'q' ||searchSquare[1] == 'r' ){
+								nonChecks.splice(nonChecks.indexOf(legalMoves[i]),1);
+							}
+						}else if(j >= 8 && iterations == 0){
+							//knights
+							if(searchSquare.substring(1,searchSquare.length-1) == 'kn' ){
+								nonChecks.splice(nonChecks.indexOf(legalMoves[i]),1);
+							}
 						}
 					}
-					iterations++; 
 				}
+				iterations++; 
+				kingPos = [kingPos[0] + directions[i][0], kingPos[1] + directions[i][1]];
 			}
+			kingPos = getKingPos(kingColor,testingPosition);	
 		}
 	}
 	return nonChecks;	
 }
 
-function getKingPos(kingColor){
+function getKingPos(kingColor,testingPosition){
 	let target = (kingColor == 'white')?"wk0":"bk0";
-	for(let i = 0; i< curPosition.length;i++){
-		for(let j = 0; j< curPosition.length;j++){
-			if(curPosition[i][j] == target){
+	for(let i = 0; i< testingPosition.length;i++){
+		for(let j = 0; j< testingPosition.length;j++){
+			if(testingPosition[i][j] == target){
 				return [i,j];
 			}
 		}
