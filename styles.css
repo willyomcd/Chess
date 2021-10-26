@@ -1,0 +1,113 @@
+
+*{
+	margin:0;
+	padding:0;
+	box-sizing: border-box;
+}
+body {
+	background-color: powderblue;
+	min-height:100vh;
+}
+.button{
+	left:50%;
+	margin-left:50px;
+	background-color: DimGray;
+	border: none;
+	color: white;
+	padding: 15px 32px;
+	display:flex;
+	flex-direction:column;
+	text-align: center;
+	text-decoration: none;
+	cursor: pointer;
+}
+.upper{
+	margin-top:50px;
+	position:absolute;
+	top: 47%;
+	left:50%;
+	transform:translate(-50%,-50%);
+	width:670px;
+	height:670px;
+	font-size: 1.5rem;
+}
+.board{
+	margin-top: 50px;
+	position:absolute;
+	display: grid;
+	grid-template-columns: repeat(8,1fr);
+	transform: translate(-50%,-50%);
+	top:47%;
+	left:50%;
+	width: 610px;
+	height: 610px;
+	border:3px solid DimGray;
+}
+.numbers{
+	font-family: courier;
+	height: 100%;
+	width: 5%;
+	display:flex;
+	flex-direction:column;
+	justify-content:space-evenly;
+	color:DimGray;
+	text-align:center;
+	top:0;
+	left:0;
+
+}
+.letters{
+	font-family: courier;
+	position:absolute;
+	width:100%;
+	bottom:0;
+	display:flex;
+	justify-content:space-evenly;
+	align-items:center;
+	color:DimGray;
+}
+.wgraveyard{
+	height: 100%;
+	width: 5%;
+	display:flex;
+	flex-direction:column;
+	justify-content:space-evenly;
+	color:DimGray;
+	text-align:center;
+	float:left;
+	
+}
+.bgraveyard{
+	height: 100%;
+	width: 5%;
+	display:flex;
+	flex-direction:column;
+	justify-content:space-evenly;
+	color:DimGray;
+	text-align:center;
+	float: right;
+}
+.square{
+	height:75px;
+	width: 75px;
+}
+.legal{
+	color: pink;
+	background: pink;
+	background-color: pink;
+}
+.piece{
+	height: 65px;
+	width:65px;
+}
+.black{
+	background:DimGray;
+	opacity:1;
+}
+.white{
+	background:WhiteSmoke;
+	opacity:1;
+}
+li{
+	list-style:none;
+}
