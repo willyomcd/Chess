@@ -307,7 +307,7 @@ function directLineToKing(piece,legalMoves,kingColor){
 			let barrier = false;
 			let iterations = 0;
 			while(barrier == false){
-				//console.log("testingPos: "+ testingPosition);
+				console.log("iterations: "+ iterations);
 				if(kingPos[0] + directions[j][0] > 7 || kingPos[0] + directions[j][0] < 0 || kingPos[1] + directions[j][1] > 7 || kingPos[1] + directions[j][1] < 0) {
 					barrier = true;
 					continue;
@@ -324,34 +324,43 @@ function directLineToKing(piece,legalMoves,kingColor){
 							//bishop, queen,king and pawn
 							if(iterations == 0 && searchSquare[1] == 'p' ) {
 								if(kingColor == "white" && (j==4 || j == 7)){
-									nonChecks.splice(nonChecks.indexOf(legalMoves[i]),1);
+									console.log("delting move here");
+									if(nonChecks.indexOf(legalMoves[i]) != -1) nonChecks.splice(nonChecks.indexOf(legalMoves[i]),1);
 								}else if(kingColor == "black" && (j==5 || j == 6)){
-									nonChecks.splice(nonChecks.indexOf(legalMoves[i]),1);
+									if(nonChecks.indexOf(legalMoves[i]) != -1) nonChecks.splice(nonChecks.indexOf(legalMoves[i]),1);
+									console.log("delting move here");
+									
 								}
 							}
 							if(iterations == 0 && searchSquare.substring(1,searchSquare.length-1) == 'k'){
-								nonChecks.splice(nonChecks.indexOf(legalMoves[i]),1);
+								if(nonChecks.indexOf(legalMoves[i]) != -1) nonChecks.splice(nonChecks.indexOf(legalMoves[i]),1);
+								console.log("delting move here");
 							}
 							if(searchSquare[1] == 'b' || searchSquare[1] == 'q' ){
-								nonChecks.splice(nonChecks.indexOf(legalMoves[i]),1);
+								if(nonChecks.indexOf(legalMoves[i]) != -1) nonChecks.splice(nonChecks.indexOf(legalMoves[i]),1);
+								console.log("delting move here");
 							}
 						}
 						else if(j < 4){
 							//rook, king, and queen
 							if(iterations == 0 && searchSquare.substring(1,searchSquare.length-1) == 'k'){
-								nonChecks.splice(nonChecks.indexOf(legalMoves[i]),1);
+								if(nonChecks.indexOf(legalMoves[i]) != -1) nonChecks.splice(nonChecks.indexOf(legalMoves[i]),1);
+								console.log("delting move here");
 							}
 							if(searchSquare[1] == 'q' ||searchSquare[1] == 'r' ){
-								nonChecks.splice(nonChecks.indexOf(legalMoves[i]),1);
+								if(nonChecks.indexOf(legalMoves[i]) != -1) nonChecks.splice(nonChecks.indexOf(legalMoves[i]),1);
+								console.log("delting move here");
 							}
 						}else if(j >= 8 && iterations == 0){
 							//knights
 							if(searchSquare.substring(1,searchSquare.length-1) == 'kn' ){
-								nonChecks.splice(nonChecks.indexOf(legalMoves[i]),1);
+								if(nonChecks.indexOf(legalMoves[i]) != -1) nonChecks.splice(nonChecks.indexOf(legalMoves[i]),1);
+								//console.log("delting move here");
 							}
 						}
 					}
 				}
+				console.log("nonchecks" + nonChecks);
 				iterations++; 
 				kingPos = [kingPos[0] + directions[j][0], kingPos[1] + directions[j][1]];
 			}
