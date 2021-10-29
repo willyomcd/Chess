@@ -202,6 +202,7 @@ function pawnLogic(piece){
 			}
 		}
 	}
+	legalMoves = directLineToKing(piece,legalMoves,getColor(piece));
 	for( let i = 0; i < legalMoves.length; i++){
 		document.getElementById(parseInt(legalMoves[i])).style.border = "4px solid pink";
 	}
@@ -290,22 +291,22 @@ function deletePieces(){
 }
 function directLineToKing(piece,legalMoves,kingColor){
 	let nonChecks = legalMoves.slice();
-	console.log("nonchecks: "+ nonChecks);
 	let directions =  [[-1,0],[1,0],[0,-1],[0,1],[-1,-1],[1,1],[1,-1],[-1,1],[-1,-2],[-1,2],[1,-2],[1,2],[2,-1],[2,1],[-2,-1],[-2,1]];
 	for(let i = 0; i < legalMoves.length; i++){
 	console.log("legal move: " + legalMoves[i]);
+		//goes through each pending legal move and searches in all directions from the king to an attacking piece.
 		let testingPosition = curPosition.map(a => ([...a]));
 		let rowCol = findPreviousPosition(piece);
 		testingPosition[rowCol[0]][rowCol[1]] = "";
 		let newRowCol = convertSquareToRowCol(legalMoves[i])
 		testingPosition[newRowCol[0]][newRowCol[1]] = piece;
 		let kingPos = getKingPos(kingColor,testingPosition);
+		console.log("king pos: "+ kingPos);
 		for(let j = 0; j < directions.length; j++){
-		console.log("j: "+ directions[j]);
+			console.log("search direction: "+ directions[j]);
 			let barrier = false;
 			let iterations = 0;
 			while(barrier == false){
-				console.log("king pos: "+ kingPos);
 				//console.log("testingPos: "+ testingPosition);
 				if(kingPos[0] + directions[j][0] > 7 || kingPos[0] + directions[j][0] < 0 || kingPos[1] + directions[j][1] > 7 || kingPos[1] + directions[j][1] < 0) {
 					barrier = true;
@@ -313,10 +314,11 @@ function directLineToKing(piece,legalMoves,kingColor){
 				}
 				let searchSquare = testingPosition[kingPos[0] + directions[j][0]][kingPos[1] + directions[j][1]];
 				console.log("searchSquare: "+ searchSquare);
+				console.log("searchSquare coords: "+ (kingPos[0] + directions[j][0]) + ", " + (kingPos[1] + directions[j][1]));
 				let searchSquareColor = getColor(searchSquare);
 			    if(searchSquare != ''){
 					barrier = true;
-					if(kingColor != getColor(piece)){
+					if(kingColor != searchSquareColor){
 					//if not empty, check for oppisite color and if the directions match with an attacking piece.
 						if((j < 8 && j>=4) ){
 							//bishop, queen,king and pawn
@@ -351,7 +353,7 @@ function directLineToKing(piece,legalMoves,kingColor){
 					}
 				}
 				iterations++; 
-				kingPos = [kingPos[0] + directions[i][0], kingPos[1] + directions[i][1]];
+				kingPos = [kingPos[0] + directions[j][0], kingPos[1] + directions[j][1]];
 			}
 			kingPos = getKingPos(kingColor,testingPosition);	
 		}
