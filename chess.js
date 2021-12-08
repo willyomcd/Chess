@@ -1,6 +1,7 @@
 const board = document.querySelector(".board");
 const bLetters = document.querySelector(".letters");
 const bNumbers = document.querySelector(".numbers");
+const test;
 const bGraveyard = document.querySelector(".bgraveyard");
 const wGraveyard = document.querySelector(".wgraveyard");
 const letters = ["a","b","c","d","e","f","g","h"];
