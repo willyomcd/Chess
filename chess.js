@@ -40,25 +40,28 @@ for(let i = 1;i<=64;i++){
 		returnOpacity();
 		if(moves.length > 0 ){
 			if(moves.indexOf(parseInt(square.id)) > -1){
-			turn = (turn == 'white') ? "black": "white";
-			let piece = e.dataTransfer.getData("text");
-			//console.log("piece: " + piece);
-			let takenPiece;
-			if(square.hasChildNodes()){
-				 takenPiece = square.removeChild(square.childNodes[0]);
-				 (getColor(piece) == 'black') ?  wGraveyard.appendChild(takenPiece): bGraveyard.appendChild(takenPiece);
-				
-			}
-			
-			square.innerHTML = '';
-			square.appendChild(document.getElementById(piece));
-			let rowCol = convertSquareToRowCol(square.id);
-			//console.log(rowCol);
-			let prevPosition = findPreviousPosition(piece);
-			//console.log(curPosition[rowCol[0]][rowCol[1]]);
-			curPosition[rowCol[0]][rowCol[1]] = piece;
-			curPosition[prevPosition[0]][prevPosition[1]] = '';
-			
+				turn = (turn == 'white') ? "black": "white";
+				let piece = e.dataTransfer.getData("text");
+				//console.log("piece: " + piece);
+				let takenPiece;
+				if(square.hasChildNodes()){
+					takenPiece = square.removeChild(square.childNodes[0]);
+					(getColor(piece) == 'black') ?  wGraveyard.appendChild(takenPiece): bGraveyard.appendChild(takenPiece);
+					
+				}
+				square.innerHTML = '';
+				square.appendChild(document.getElementById(piece));
+				let rowCol = convertSquareToRowCol(square.id);
+				let prevPosition = findPreviousPosition(piece);
+				curPosition[rowCol[0]][rowCol[1]] = piece;
+				curPosition[prevPosition[0]][prevPosition[1]] = '';
+				//checks for check, 
+				let legalReturn;
+				(getColor(piece) == 'black') ? legalReturn = directLineToKing(piece,[parseInt(square.id)],"white") : legalReturn = directLineToKing(piece,[parseInt(square.id)],"black");
+				console.log(legalReturn);
+				if(legalReturn.length == 0){
+					(getColor(piece) == 'black') ? console.log("white in check"): console.log("black in check");
+				}
 			}
 			moves = [];
 		}
@@ -379,4 +382,7 @@ function getKingPos(kingColor,testingPosition){
 			}
 		}
 	}
+}
+function checkForCheckmate(){
+
 }
